@@ -1,0 +1,40 @@
+go atlas 
+
+mesh space.mult=1.0
+x.mesh loc=0.0 spac=1 
+x.mesh loc=1.0 spac=1
+
+y.mesh loc=0.0 spac=0.2
+y.mesh loc=1.0 spac=0.2
+y.mesh loc=3.0 spac=0.05
+y.mesh loc=5.0 spac=0.002
+y.mesh loc=7.0 spac=0.05
+y.mesh loc=10 spac=0.2
+y.mesh loc=15 spac=0.2
+
+region num=1 silicon 
+
+electr top name=cathode 
+electr bottom name=anode
+
+doping n.type conc=1.0e16 uniform
+doping boron uniform conc=1.0e18 y.min=5.0 y.max=15.0
+
+model Fermi conmob fldmob print
+method block Newton
+
+solve init
+
+output con.band val.band band.param e.field
+save outf=structequilibre.str
+
+log outf=structpolar.log
+
+solve vanode=0.1 vstep=0.1 vfinal=0.1 name=anode 
+save outf=structvar.str
+
+tonyplot structequilibre.str 
+tonyplot structvar.str 
+tonyplot structpolar.log
+
+quit
